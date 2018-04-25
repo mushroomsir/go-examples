@@ -1,0 +1,5 @@
+*.coverprofile
+debug
+debug.test
+vendor
+main
