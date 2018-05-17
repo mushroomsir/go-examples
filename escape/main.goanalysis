@@ -1,0 +1,38 @@
+package main
+
+func main() {
+	//	var s string
+
+	//...
+
+	a := []byte("a")
+	println(cap(a))
+	println(a)
+}
+
+// S ...
+// type S struct{}
+
+// func main() {
+// 	var x S
+// 	y := &x
+// 	_ = *identity(y)
+// }
+
+// func identity(z *S) *S {
+// 	return z
+// }
+
+// http://www.agardner.me/golang/garbage/collection/gc/escape/analysis/2015/10/18/go-escape-analysis.html
+
+// func main() {
+// 	var x S
+// 	_ = identity(x)
+// }
+
+// func identity(x S) S {
+// 	return x
+// }
+
+// go run -gcflags '-m -l' main.go
+// go tool compile -m -l main.go

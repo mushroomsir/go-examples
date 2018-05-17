@@ -1,0 +1,17 @@
+package main
+
+func main() {
+	s := []byte("") //分配个cap-0,len=0的slice
+	print(cap(s), len(s))
+	s1 := append(s, 'a') // 检测到s为0，在栈上生成个新的slice
+	s2 := append(s, 'b') // 检测到s为0，在栈上生成个新的slice
+
+	print(string(s1), "========", string(s2))
+
+	// 	PS D:\go\src\github.com\mushroomsir\go-examples> C:\Go164\bin\go.exe  run -gcflags '-m -l' main.go
+	// # command-line-arguments
+	// .\main.go:4: main ([]byte)("") does not escape
+	// .\main.go:9: main string(s1) does not escape
+	// .\main.go:9: main string(s2) does not escape
+	// 00a========b
+}
