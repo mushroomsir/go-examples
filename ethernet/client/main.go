@@ -1,27 +1,32 @@
 package main
 
 import (
-	"encoding/binary"
 	"flag"
 	"net"
 	"syscall"
 	"time"
 
+	"github.com/mushroomsir/go-examples/ethernet/wire"
 	"github.com/mushroomsir/go-examples/util"
 	"github.com/mushroomsir/logger/alog"
 )
 
 var (
 	iface     = flag.String("iface", "eth0", "net interface name")
-	broadcast = net.HardwareAddr{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}
+	broadcast = net.HardwareAddr{0x02, 0x42, 0xac, 0x11, 0x00, 0x02}
 )
+
+var etherType uint16 = 0x800
+
+//syscall.ETH_P_IP
 
 func main() {
 	flag.Parse()
 	ifi, err := net.InterfaceByName(*iface)
 	util.CheckError(err)
 	alog.Info(ifi)
-	fd, _ := syscall.Socket(syscall.AF_PACKET, syscall.SOCK_RAW, 52428)
+	fd, err := syscall.Socket(syscall.AF_PACKET, syscall.SOCK_RAW, int(wire.Htons(etherType)))
+	util.CheckError(err)
 	for {
 		payload := []byte("msg")
 		minPayload := len(payload)
@@ -29,21 +34,21 @@ func main() {
 			minPayload = 46
 		}
 		b := make([]byte, 14+minPayload)
-		copy(b[0:6], broadcast)
-		copy(b[6:12], ifi.HardwareAddr)
-
-		etype := make([]byte, 2)
-		binary.BigEndian.PutUint16(etype, uint16(52428))
-		copy(b[12:14], etype)
+		header := &wire.Header{
+			DestinationAddress: broadcast,
+			SourceAddress:      ifi.HardwareAddr,
+			EtherType:          etherType,
+		}
+		copy(b[0:14], header.Marshal())
 		copy(b[14:14+len(payload)], payload)
 
 		var baddr [8]byte
 		copy(baddr[:], broadcast)
 		to := &syscall.SockaddrLinklayer{
 			Ifindex:  ifi.Index,
-			Halen:    uint8(len(broadcast)),
+			Halen:    6,
 			Addr:     baddr,
-			Protocol: 52428,
+			Protocol: wire.Htons(etherType),
 		}
 		err = syscall.Sendto(fd, b, 0, to)
 		util.CheckError(err)
