@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strconv"
 
 	elastic "gopkg.in/olivere/elastic.v5"
 )
@@ -21,6 +22,8 @@ const (
 
 func main() {
 	log.Println(AllPermission & Execute)
+	ccc := "x" + strconv.Itoa(int(Delete))
+	log.Print(ccc)
 	client, err := elastic.NewClient(elastic.SetURL("http://127.0.0.1:9200"))
 	log.Println(client)
 	log.Println(err)
