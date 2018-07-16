@@ -20,8 +20,7 @@ var (
 // https://github.com/spotify/linux/blob/master/include/linux/if_ether.h
 // http://man7.org/linux/man-pages/man7/packet.7.html
 func main() {
-	flag.Parse()
-	ifi, err := net.InterfaceByName(*iface)
+	ifi, err := net.InterfaceByName("eth0")
 	util.CheckError(err)
 	alog.Info(ifi.HardwareAddr.String())
 	// syscall.ETH_P_IP

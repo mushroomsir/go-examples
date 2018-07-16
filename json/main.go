@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+
+	"golang.org/x/sys/windows/registry"
 )
 
 func main() {
@@ -21,5 +23,19 @@ Actors":["Steve McQueen","Jacqueline Bisset"]}]`
 
 	sum := sha256.Sum256([]byte("X"))
 	log.Println(fmt.Sprintf("%x", sum))
+}
 
+// GetMachineID gets the unique ID of current machine.
+func GetMachineID() (string, error) {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Cryptography`, registry.QUERY_VALUE|registry.WOW64_64KEY)
+	if err != nil {
+		return "", err
+	}
+	defer k.Close()
+
+	s, _, err := k.GetStringValue("MachineGuid")
+	if err != nil {
+		return "", err
+	}
+	return s, nil
 }
