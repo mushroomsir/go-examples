@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	_ "code.teambition.com/soa/go-lib/pkg/health"
 )
 
 // Result ...
@@ -15,7 +17,8 @@ type Result struct {
 }
 
 func main() {
-	process()
+	time.Sleep(time.Hour)
+	//process()
 }
 
 func process() {
