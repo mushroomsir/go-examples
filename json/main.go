@@ -6,8 +6,14 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/siddontang/go/bson"
 	"golang.org/x/sys/windows/registry"
 )
+
+// Person ...
+type Person struct {
+	Name bson.ObjectId `json:"name"`
+}
 
 func main() {
 	var t = `[{"Title":"Casablanca","released":1942,"Actors":["Humphrey Bogart","Ingr
@@ -23,6 +29,10 @@ Actors":["Steve McQueen","Jacqueline Bisset"]}]`
 
 	sum := sha256.Sum256([]byte("X"))
 	log.Println(fmt.Sprintf("%x", sum))
+
+	p := new(Person)
+	err = json.Unmarshal([]byte(`{"name":"x"}`), p)
+	log.Println(err)
 }
 
 // GetMachineID gets the unique ID of current machine.
