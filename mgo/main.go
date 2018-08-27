@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/siddontang/go/bson"
 	mgo "gopkg.in/mgo.v2"
@@ -15,6 +16,7 @@ type Person struct {
 }
 
 func main() {
+	log.Println(bson.NewObjectId())
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		panic(err)
