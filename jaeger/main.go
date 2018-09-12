@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -15,6 +17,7 @@ func init() {
 }
 
 func main() {
+	//http://127.0.0.1:16686
 	c := Config{
 		Addr:    "http://127.0.0.1:9411/api/v1/spans",
 		Rate:    1,
@@ -23,15 +26,27 @@ func main() {
 	Init(c, "mush", "", false)
 	ctx := context.Background()
 
-	span, zctx := opentracing.StartSpanFromContext(ctx, "t1")
+	span := opentracing.StartSpan("ctx")
+	cc, _ := json.Marshal(span.Context())
+	fmt.Println("span1", string(cc))
 	time.Sleep(time.Second)
 
-	span2, zctx := opentracing.StartSpanFromContext(zctx, "t2")
+	span2, zctx := opentracing.StartSpanFromContext(opentracing.ContextWithSpan(ctx, span), "t2")
+	cc, _ = json.Marshal(span2.Context())
+	fmt.Println("span2", string(cc))
 	time.Sleep(300 * time.Millisecond)
 
 	span3, _ := opentracing.StartSpanFromContext(zctx, "t3")
+	cc, _ = json.Marshal(span3.Context())
+	fmt.Println("span3", string(cc))
 	time.Sleep(300 * time.Millisecond)
 	span3.Finish()
+
+	span4, _ := opentracing.StartSpanFromContext(zctx, "t4")
+	cc, _ = json.Marshal(span4.Context())
+	fmt.Println("span4", string(cc))
+	time.Sleep(300 * time.Millisecond)
+	span4.Finish()
 
 	time.Sleep(500 * time.Millisecond)
 	span2.Finish()
