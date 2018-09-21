@@ -28,12 +28,11 @@ func main() {
 
 	// Collection People
 	c := session.DB("test123").C("people")
-
 	query := bson.M{
 		"name": "abc",
 	}
 	update := bson.M{
-		"$set": bson.M{"age": 1},
+		"$set": bson.M{"age": 63},
 		"$setOnInsert": bson.M{
 			"name":  "abcc",
 			"phone": "186",
@@ -46,5 +45,7 @@ func main() {
 	}
 	result := &Person{}
 	_, err = c.Find(query).Apply(change, result)
+
+	
 	fmt.Println(err)
 }

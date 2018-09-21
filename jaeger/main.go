@@ -23,7 +23,8 @@ func main() {
 		Rate:    1,
 		Timeout: 3,
 	}
-	Init(c, "mush", "", false)
+	err := Init(c, "mush", "", false)
+	fmt.Println(err)
 	ctx := context.Background()
 
 	span := opentracing.StartSpan("ctx")
@@ -52,7 +53,7 @@ func main() {
 	span2.Finish()
 
 	span.Finish()
-	time.Sleep(time.Second)
+	time.Sleep(3 * time.Second)
 }
 
 // Config struct for zipkin client.
